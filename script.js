@@ -73,9 +73,7 @@ function displayResults(results) {
       link.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const time = link.dataset.time;
-        const [minutes, seconds] = time.split(':').map(parseFloat);
-        const totalSeconds = minutes * 60 + seconds;
-        seekTo(totalSeconds); // Call seekTo function with the specified time
+        scrollToTime(time); // Scroll to the specified time
       });
     });
   });
@@ -140,10 +138,10 @@ function onPlayerStateChange(event) {
 // Function to seek to a specific time in the video
 function seekTo(seconds) {
   if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-    player.seekTo(seconds, true); // Use `true` as the second argument to start playing after seeking
-  } else {
     player.seekTo(seconds);
-    player.playVideo(); // Start playing the video if it's not already playing
+  } else {
+    ytSeconds = seconds;
+    player.playVideo();
   }
 }
 
@@ -152,12 +150,12 @@ const timestampLinks = div.querySelectorAll('.timestamp-link');
 timestampLinks.forEach(link => {
   link.addEventListener('click', (event) => {
     event.preventDefault(); // Prevent default link behavior
-    const href = link.getAttribute('href'); // Get the href attribute of the clicked link
-    const timeIndex = href.indexOf('&t='); // Find the index of the time parameter in the href
-    if (timeIndex !== -1) {
-      const timeParam = href.substring(timeIndex + 3); // Extract the time parameter value
-      const seconds = parseInt(timeParam); // Parse the time parameter as seconds
-      seekTo(seconds); // Call seekTo function with the specified time
+    const time = link.dataset.time;
+    const [minutes, seconds] = time.split(':').map(parseFloat);
+    const totalSeconds = minutes * 60 + seconds;
+    seekTo(totalSeconds); // Call seekTo function with the specified time
+  });
+});
 
 // Initial fetch and display of data
 (async () => {
