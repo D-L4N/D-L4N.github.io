@@ -30,6 +30,12 @@ function scrollToTime(time) {
   playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// Highlight function to add highlighting to searched terms
+function highlight(text, query) {
+    if (!query) return text; // If no query, return the original text
+    return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
+}
+
 // Display search results
 function displayResults(results, query) {
     resultsDiv.innerHTML = '';
