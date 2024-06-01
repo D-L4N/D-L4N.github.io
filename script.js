@@ -79,6 +79,14 @@ function displayResults(results) {
   });
 }
 
+// Function to scroll to a specific time in the video
+function scrollToTime(time) {
+  // Assuming you have a video player element with an ID 'player'
+  const playerElement = document.getElementById('player');
+  // Assuming you want to scroll to the video player element
+  playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // Function to extract video ID from YouTube video URL
 function getYouTubeVideoID(url) {
   const regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
