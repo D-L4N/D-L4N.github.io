@@ -38,25 +38,6 @@
     button:hover {
       background-color: #9c6ae5; /* Updated color */
     }
-    .content-wrapper {
-      display: flex;
-    }
-    .search-container {
-      width: 30%; /* Adjust width as needed */
-      margin-right: 20px;
-    }
-    .results-container {
-      width: 50%; /* Adjust width as needed */
-      margin-right: 20px;
-    }
-    .video-container {
-      flex-grow: 1; /* Allow the video container to grow and fill the remaining space */
-    }
-    #player {
-      width: 100%; /* Make the player responsive */
-      height: 0;
-      padding-bottom: 56.25%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
-    }
     #results {
       margin-top: 20px;
     }
@@ -128,18 +109,9 @@
 </head>
 <body>
   <h1>Search Stream Timestamps</h1>
-  <div class="content-wrapper">
-    <div class="search-container">
-      <input type="text" id="search" placeholder="Search...">
-      <button id="searchButton">Search</button>
-    </div>
-    <div class="results-container">
-      <div id="results"></div>
-    </div>
-    <div class="video-container">
-      <div id="player"></div>
-    </div>
-  </div>
+  <input type="text" id="search" placeholder="Search...">
+  <button id="searchButton">Search</button>
+  <div id="results"></div>
 
   <script src="script.js"></script>
 </body>
