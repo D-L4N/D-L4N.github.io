@@ -27,15 +27,26 @@ async function fetchData() {
   return data;
 }
 
+// Extract video ID from YouTube link
+function getYouTubeVideoID(url) {
+  const urlObj = new URL(url);
+  return urlObj.searchParams.get("v");
+}
+
 // Display search results
 function displayResults(results) {
   resultsDiv.innerHTML = '';
   results.forEach(result => {
+    const videoID = getYouTubeVideoID(result.link);
+    const thumbnailURL = `https://img.youtube.com/vi/${videoID}/0.jpg`;
     const div = document.createElement('div');
     div.innerHTML = `
-      <h3><a href="${result.link}" target="_blank" class="stream-link">${result.title}</a></h3>
-      <p>${result.date}</p>
-      <ul>${result.timestamps.map(ts => `<li>${ts.time} - ${ts.description}</li>`).join('')}</ul>
+      <div style="margin-bottom: 20px;">
+        <h3><a href="${result.link}" target="_blank" class="stream-link">${result.title}</a></h3>
+        <img src="${thumbnailURL}" alt="${result.title} Thumbnail" style="width: 100%; max-width: 320px; display: block;">
+        <p>${result.date}</p>
+        <ul>${result.timestamps.map(ts => `<li>${ts.time} - ${ts.description}</li>`).join('')}</ul>
+      </div>
     `;
     resultsDiv.appendChild(div);
   });
