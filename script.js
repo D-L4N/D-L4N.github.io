@@ -41,9 +41,9 @@ function displayResults(results, query) {
         div.classList.add('result-item');
 
         // Highlight function to add highlighting to searched terms
-        function highlight(text) {
-            return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
-        }
+function highlight(text, query) {
+    return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
+}
       
       div.innerHTML = `
             <div class="result-content">
@@ -117,10 +117,10 @@ searchButton.addEventListener('click', async () => {
   try {
     const data = await fetchData();
     const filteredData = query ? filterData(data.flat(), query) : data.flat();
-    displayResults(filteredData);
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
+        displayResults(filteredData, query); // Pass the query to the displayResults function
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 });
 
 // Function to load the YouTube Player API
