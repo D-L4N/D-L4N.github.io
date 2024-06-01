@@ -65,4 +65,3 @@ searchInput.addEventListener('input', async () => {
     console.error('Error fetching initial data:', error);
   }
 })();
-
