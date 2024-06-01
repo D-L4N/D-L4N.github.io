@@ -43,8 +43,8 @@ function displayResults(results) {
             ${result.timestamps.map(ts => {
               const [minutes, seconds] = ts.time.split(':').map(parseFloat);
               const totalSeconds = minutes * 60 + seconds;
-              return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
-            }).join('')}
+              return `<li><a href="#" class="timestamp-link" data-time="${totalSeconds}">${ts.time}</a> - ${ts.description}</li>`;
+          }).join('')}
           </ul>
           <div class="video-container">
             <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoID}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -157,7 +157,13 @@ timestampLinks.forEach(link => {
     if (timeIndex !== -1) {
       const timeParam = href.substring(timeIndex + 3); // Extract the time parameter value
       const seconds = parseInt(timeParam); // Parse the time parameter as seconds
-      seekTo(seconds); // Call seekTo function with the specified time
+      if (!isNaN(seconds)) {
+        seekTo(seconds); // Call seekTo function with the specified time
+      } else {
+        console.error('Invalid time parameter:', timeParam);
+      }
+    } else {
+      console.error('Time parameter not found in URL:', href);
 
 // Initial fetch and display of data
 (async () => {
