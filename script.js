@@ -22,16 +22,6 @@ async function fetchData() {
   return data;
 }
 
-// Function to highlight search query in text
-function highlight(text, query) {
-  const index = text.toLowerCase().indexOf(query.toLowerCase());
-  if (index >= 0) {
-    return text.substring(0, index) + '<span class="highlight">' + text.substring(index, index + query.length) + '</span>' + text.substring(index + query.length);
-  } else {
-    return text;
-  }
-}
-
 // Function to scroll to a specific time in the video
 function scrollToTime(time) {
   // Assuming you have a video player element with an ID 'player'
@@ -40,6 +30,7 @@ function scrollToTime(time) {
   playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// Display search results
 function displayResults(results, query) {
     resultsDiv.innerHTML = '';
     results.forEach(result => {
@@ -49,22 +40,23 @@ function displayResults(results, query) {
         const div = document.createElement('div');
         div.classList.add('result-item');
 
-        // Highlight the title and date based on the search query
-        const highlightedTitle = query ? highlight(result.title, query) : result.title;
-        const highlightedDate = query ? highlight(result.description, query) : result.date;
-      
+        // Highlight function to add highlighting to searched terms
+        function highlight(text) {
+            return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
+        }
+
         div.innerHTML = `
             <div class="result-content">
                 <h3>
-                    <a href="${videoURL}" target="_blank" class="stream-link">${highlightedTitle}</a>
+                    <a href="${videoURL}" target="_blank" class="stream-link">${highlight(result.title)}</a>
                     <button class="collapse-button">Show</button>
                 </h3>
-                <p>${highlightedDate}</p>
+                <p>${highlight(result.date)}</p>
                 <ul class="timestamps">
                     ${result.timestamps.map(ts => {
                         const [minutes, seconds] = ts.time.split(':').map(parseFloat);
                         const totalSeconds = minutes * 60 + seconds;
-                        return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link" data-time="${ts.time}">${ts.time}</a> - ${query ? highlight(ts.description, query) : ts.description}</li>`;
+                        return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link" data-time="${ts.time}">${ts.time}</a> - ${highlight(ts.description)}</li>`;
                     }).join('')}
                 </ul>
                 <div class="video-container">
@@ -119,15 +111,11 @@ function filterData(data, query) {
 
 // Event listener for search button click
 searchButton.addEventListener('click', async () => {
-  const query = searchInput.value.trim(); // Trim the query to remove leading and trailing whitespaces
+  const query = searchInput.value;
   try {
     const data = await fetchData();
-    if (query) { // If the query is not empty
-      const filteredData = filterData(data.flat(), query);
-      displayResults(filteredData, query);
-    } else { // If the query is empty
-      displayResults(data.flat());
-    }
+    const filteredData = query ? filterData(data.flat(), query) : data.flat();
+    displayResults(filteredData, query); // Pass the query to the displayResults function
   } catch (error) {
     console.error('Error fetching data:', error);
   }
