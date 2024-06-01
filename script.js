@@ -30,12 +30,6 @@ function scrollToTime(time) {
   playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Highlight function to add highlighting to searched terms
-function highlight(text, query) {
-    if (!query) return text; // If no query, return the original text
-    return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
-}
-
 // Display search results
 function displayResults(results, query) {
     resultsDiv.innerHTML = '';
@@ -43,18 +37,14 @@ function displayResults(results, query) {
         const videoURL = result.link; // Video link from the JSON data
         const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
 
-        // Highlight the title and date based on the search query
-    const highlightedTitle = highlight(result.title, query);
-    const highlightedDate = highlight(result.date, query);
-
         const div = document.createElement('div');
         div.classList.add('result-item');
 
-        // Highlight function to add highlighting to searched terms
-        function highlight(text) {
-            return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
-        }
-
+        
+    // Highlight the title and date based on the search query
+    const highlightedTitle = query ? highlight(result.title, query) : result.title;
+    const highlightedDate = query ? highlight(result.description, query) : result.date;
+      
         div.innerHTML = `
             <div class="result-content">
                 <h3>
