@@ -40,13 +40,14 @@ function displayResults(results) {
     const videoID = getYouTubeVideoID(result.link);
     const thumbnailURL = `https://img.youtube.com/vi/${videoID}/0.jpg`;
     const div = document.createElement('div');
+    div.classList.add('result-item');
     div.innerHTML = `
-      <div style="margin-bottom: 20px;">
+      <div class="result-content">
         <h3><a href="${result.link}" target="_blank" class="stream-link">${result.title}</a></h3>
-        <img src="${thumbnailURL}" alt="${result.title} Thumbnail" style="width: 100%; max-width: 320px; display: block;">
         <p>${result.date}</p>
         <ul>${result.timestamps.map(ts => `<li>${ts.time} - ${ts.description}</li>`).join('')}</ul>
       </div>
+      <img src="${thumbnailURL}" alt="${result.title} Thumbnail" class="thumbnail">
     `;
     resultsDiv.appendChild(div);
   });
