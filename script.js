@@ -73,7 +73,9 @@ function displayResults(results) {
       link.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const time = link.dataset.time;
-        scrollToTime(time); // Scroll to the specified time
+        const [minutes, seconds] = time.split(':').map(parseFloat);
+        const totalSeconds = minutes * 60 + seconds;
+        seekTo(totalSeconds); // Call seekTo function with the specified time
       });
     });
   });
