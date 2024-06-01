@@ -30,7 +30,6 @@ function scrollToTime(time) {
   playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Display search results
 function displayResults(results, query) {
     resultsDiv.innerHTML = '';
     results.forEach(result => {
@@ -40,23 +39,22 @@ function displayResults(results, query) {
         const div = document.createElement('div');
         div.classList.add('result-item');
 
-        
-    // Highlight the title and date based on the search query
-    const highlightedTitle = query ? highlight(result.title, query) : result.title;
-    const highlightedDate = query ? highlight(result.description, query) : result.date;
+        // Highlight the title and date based on the search query
+        const highlightedTitle = query ? highlight(result.title, query) : result.title;
+        const highlightedDate = query ? highlight(result.description, query) : result.date;
       
         div.innerHTML = `
             <div class="result-content">
                 <h3>
-                    <a href="${videoURL}" target="_blank" class="stream-link">${highlight(result.title)}</a>
+                    <a href="${videoURL}" target="_blank" class="stream-link">${highlightedTitle}</a>
                     <button class="collapse-button">Show</button>
                 </h3>
-                <p>${highlight(result.date)}</p>
+                <p>${highlightedDate}</p>
                 <ul class="timestamps">
                     ${result.timestamps.map(ts => {
                         const [minutes, seconds] = ts.time.split(':').map(parseFloat);
                         const totalSeconds = minutes * 60 + seconds;
-                        return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link" data-time="${ts.time}">${ts.time}</a> - ${highlight(ts.description)}</li>`;
+                        return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link" data-time="${ts.time}">${ts.time}</a> - ${query ? highlight(ts.description, query) : ts.description}</li>`;
                     }).join('')}
                 </ul>
                 <div class="video-container">
