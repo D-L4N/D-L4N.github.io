@@ -141,6 +141,7 @@ function seekTo(seconds) {
     player.playVideo();
   }
 }
+
 // Add event listener for timestamp links
 const timestampLinks = div.querySelectorAll('.timestamp-link');
 timestampLinks.forEach(link => {
