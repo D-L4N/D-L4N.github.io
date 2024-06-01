@@ -22,6 +22,14 @@ async function fetchData() {
   return data;
 }
 
+// Function to scroll to a specific time in the video
+function scrollToTime(time) {
+  // Assuming you have a video player element with an ID 'player'
+  const playerElement = document.getElementById('player');
+  // Assuming you want to scroll to the video player element
+  playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // Display search results
 function displayResults(results) {
     resultsDiv.innerHTML = '';
@@ -78,6 +86,8 @@ function displayResults(results) {
     });
   });
 }
+
+
 
 // Function to extract video ID from YouTube video URL
 function getYouTubeVideoID(url) {
@@ -137,12 +147,8 @@ function onPlayerStateChange(event) {
 
 // Function to seek to a specific time in the video
 function seekTo(seconds) {
-  if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-    player.seekTo(seconds);
-  } else {
-    ytSeconds = seconds;
-    player.playVideo();
-  }
+  player.playVideo();
+  player.seekTo(seconds, true);
 }
 
 // Add event listener for timestamp links
@@ -154,6 +160,7 @@ timestampLinks.forEach(link => {
     const [minutes, seconds] = time.split(':').map(parseFloat);
     const totalSeconds = minutes * 60 + seconds;
     seekTo(totalSeconds); // Call seekTo function with the specified time
+
   });
 });
 
