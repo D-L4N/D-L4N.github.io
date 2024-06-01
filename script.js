@@ -41,11 +41,11 @@ function displayResults(results, query) {
         div.classList.add('result-item');
 
         // Highlight function to add highlighting to searched terms
-function highlight(text, query) {
-    return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
-}
-      
-      div.innerHTML = `
+        function highlight(text) {
+            return text.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
+        }
+
+        div.innerHTML = `
             <div class="result-content">
                 <h3>
                     <a href="${videoURL}" target="_blank" class="stream-link">${highlight(result.title)}</a>
@@ -56,7 +56,7 @@ function highlight(text, query) {
                     ${result.timestamps.map(ts => {
                         const [minutes, seconds] = ts.time.split(':').map(parseFloat);
                         const totalSeconds = minutes * 60 + seconds;
-                        return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link">${ts.time}</a> - ${highlight(ts.description)}</li>`;
+                        return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link" data-time="${ts.time}">${ts.time}</a> - ${highlight(ts.description)}</li>`;
                     }).join('')}
                 </ul>
                 <div class="video-container">
@@ -66,35 +66,32 @@ function highlight(text, query) {
 
         resultsDiv.appendChild(div);
 
-    const collapseButton = div.querySelector('.collapse-button');
-    const timestamps = div.querySelector('.timestamps');
-    
-    collapseButton.addEventListener('click', () => {
-      if (timestamps.style.display === 'none') {
-        timestamps.style.display = 'block';
-        timestamps.classList.add('fade-in');
-        collapseButton.textContent = 'Hide';
-      } else {
-        timestamps.style.display = 'none';
-        timestamps.classList.remove('fade-in');
-        collapseButton.textContent = 'Show';
-      }
+        const collapseButton = div.querySelector('.collapse-button');
+        const timestamps = div.querySelector('.timestamps');
+
+        collapseButton.addEventListener('click', () => {
+            if (timestamps.style.display === 'none') {
+                timestamps.style.display = 'block';
+                timestamps.classList.add('fade-in');
+                collapseButton.textContent = 'Hide';
+            } else {
+                timestamps.style.display = 'none';
+                timestamps.classList.remove('fade-in');
+                collapseButton.textContent = 'Show';
+            }
+        });
+
+        // Add event listener for timestamp links INSIDE THE LOOP
+        const timestampLinks = div.querySelectorAll('.timestamp-link');
+        timestampLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default link behavior
+                const time = link.dataset.time;
+                scrollToTime(time); // Scroll to the specified time
+            });
+        });
     });
-results.forEach(result => {
-    // Add event listener for timestamp links
-    const timestampLinks = div.querySelectorAll('.timestamp-link');
-    timestampLinks.forEach(link => {
-      link.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default link behavior
-        const time = link.dataset.time;
-        scrollToTime(time); // Scroll to the specified time
-      });
-    });
-  });
-      });
 }
-
-
 
 // Function to extract video ID from YouTube video URL
 function getYouTubeVideoID(url) {
@@ -118,10 +115,10 @@ searchButton.addEventListener('click', async () => {
   try {
     const data = await fetchData();
     const filteredData = query ? filterData(data.flat(), query) : data.flat();
-        displayResults(filteredData, query); // Pass the query to the displayResults function
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
+    displayResults(filteredData, query); // Pass the query to the displayResults function
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 });
 
 // Function to load the YouTube Player API
@@ -157,19 +154,6 @@ function seekTo(seconds) {
   player.playVideo();
   player.seekTo(seconds, true);
 }
-
-// Add event listener for timestamp links
-const timestampLinks = div.querySelectorAll('.timestamp-link');
-timestampLinks.forEach(link => {
-  link.addEventListener('click', (event) => {
-    event.preventDefault(); // Prevent default link behavior
-    const time = link.dataset.time;
-    const [minutes, seconds] = time.split(':').map(parseFloat);
-    const totalSeconds = minutes * 60 + seconds;
-    seekTo(totalSeconds); // Call seekTo function with the specified time
-
-  });
-});
 
 // Initial fetch and display of data
 (async () => {
