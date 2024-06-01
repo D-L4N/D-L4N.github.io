@@ -26,8 +26,8 @@ async function fetchData() {
 function displayResults(results) {
   resultsDiv.innerHTML = '';
   results.forEach(result => {
-    const videoID = result.videoID; // Using videoID from the JSON data
     const videoURL = result.link; // Video link from the JSON data
+    const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
 
     const div = document.createElement('div');
     div.classList.add('result-item');
@@ -74,6 +74,13 @@ function displayResults(results) {
       });
     });
   });
+}
+
+// Function to extract video ID from YouTube video URL
+function getYouTubeVideoID(url) {
+  const regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
 }
 
 // Filter data based on search input
