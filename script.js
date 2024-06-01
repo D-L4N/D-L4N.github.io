@@ -37,8 +37,8 @@ function displayResults(results) {
           <button class="collapse-button">Show</button>
         </h3>
         <p>${result.date}</p>
-        <ul class="timestamps" style="display: none;">
-          ${result.timestamps.map(ts => `<li><a href="#" class="timestamp-link" data-time="${ts.time}">${ts.time} - ${ts.description}</a></li>`).join('')}
+        <ul class="timestamps">
+          ${result.timestamps.map(ts => `<li><a href="#" class="timestamp-link" data-time="${ts.time}">${ts.time}</a> - ${ts.description}</li>`).join('')}
         </ul>
       </div>
       <img src="${thumbnailURL}" alt="${result.title} Thumbnail" class="thumbnail">
@@ -124,7 +124,13 @@ function onPlayerReady(event) {
 
 // Function to seek the video to a specific time
 function seekVideo(videoID, time) {
-  player.loadVideoById(videoID, parseInt(time), 'large'); // Load video by ID and seek to the specified time (in seconds)
+  player.loadVideoById(videoID, convertTimeToSeconds(time), 'large'); // Load video by ID and seek to the specified time (in seconds)
+}
+
+// Helper function to convert time format (e.g., '2:02') to seconds
+function convertTimeToSeconds(time) {
+  const [minutes, seconds] = time.split(':').map(parseFloat);
+  return minutes * 60 + seconds;
 }
 
 // Initial fetch and display of data
