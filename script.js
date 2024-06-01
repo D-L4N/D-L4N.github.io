@@ -81,8 +81,6 @@ function getYouTubeVideoID(url) {
   const regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const match = url.match(regex);
   const videoID = match ? match[1] : null;
-  console.log('Video URL:', url);
-  console.log('Extracted Video ID:', videoID);
   return videoID;
 }
 
@@ -114,36 +112,47 @@ function loadYouTubePlayerAPI() {
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
-// Function to create the YouTube player
+// Initialize the YouTube player when the Iframe API is ready
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
-    height: '390',
-    width: '640',
-    videoId: 'M7lc1UVf-VE', // Replace with your video ID
+    height: '315',
+    width: '560',
+    videoId: videoID, // Replace with your video ID
     events: {
-      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
     }
   });
 }
 
-
-// Event listener for when the YouTube player is ready
-function onPlayerReady(event) {
-  // Player is ready, you can now seek the video to specific times
+// Function to handle state changes of the YouTube player
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.PLAYING && ytSeconds > 0) {
+    player.seekTo(ytSeconds);
+    ytSeconds = 0;
+  }
 }
 
-// Function to scroll to a specific time in the embedded video
-function scrollToTime(time) {
-  // Parse the time string (e.g., "2:02") to seconds
-  const [minutes, seconds] = time.split(':').map(parseFloat);
-  const totalSeconds = minutes * 60 + seconds;
-  
-  // Calculate the offset to scroll to (adjust as needed based on your layout)
-  const offset = totalSeconds * 10; // Adjust based on your video length and layout
-  
-  // Scroll to the offset
-  window.scrollTo({ top: offset, behavior: 'smooth' });
+// Function to seek to a specific time in the video
+function seekTo(seconds) {
+  if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+    player.seekTo(seconds);
+  } else {
+    ytSeconds = seconds;
+    player.playVideo();
+  }
 }
+// Add event listener for timestamp links
+const timestampLinks = div.querySelectorAll('.timestamp-link');
+timestampLinks.forEach(link => {
+  link.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent default link behavior
+    const time = link.dataset.time;
+    const [minutes, seconds] = time.split(':').map(parseFloat);
+    const totalSeconds = minutes * 60 + seconds;
+    seekTo(totalSeconds); // Call seekTo function with the specified time
+  });
+});
+
 // Initial fetch and display of data
 (async () => {
   try {
