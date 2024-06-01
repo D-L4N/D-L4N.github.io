@@ -137,12 +137,8 @@ function onPlayerStateChange(event) {
 
 // Function to seek to a specific time in the video
 function seekTo(seconds) {
-  if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-    player.seekTo(seconds);
-  } else {
-    ytSeconds = seconds;
-    player.playVideo();
-  }
+  player.playVideo();
+  player.seekTo(seconds, true);
 }
 
 // Add event listener for timestamp links
@@ -155,8 +151,6 @@ timestampLinks.forEach(link => {
     const totalSeconds = minutes * 60 + seconds;
     seekTo(totalSeconds); // Call seekTo function with the specified time
 
-    // Set the href attribute to the correct timestamp value
-    link.href = `#${totalSeconds}`;
   });
 });
 
