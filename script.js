@@ -106,31 +106,24 @@ searchButton.addEventListener('click', async () => {
   }
 });
 
-// Load the YouTube player API asynchronously
+// Function to load the YouTube Player API
 function loadYouTubePlayerAPI() {
   const tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
+  tag.src = "https://www.youtube.com/iframe_api";
   const firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
-// Initialize the YouTube player
+// Function to create the YouTube player
 function onYouTubeIframeAPIReady() {
-  fetchData()
-    .then(data => {
-      const firstVideoID = data[0][0].videoID; // Assuming the first video in the first array is the one to be displayed
-      player = new YT.Player('player', {
-        height: '360',
-        width: '640',
-        videoId: firstVideoID, // Use the first video ID from the JSON data
-        events: {
-          'onReady': onPlayerReady
-        }
-      });
-    })
-    .catch(error => {
-      console.error('Error initializing YouTube player:', error);
-    });
+  player = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    videoId: 'M7lc1UVf-VE', // Replace with your video ID
+    events: {
+      'onReady': onPlayerReady,
+    }
+  });
 }
 
 
