@@ -1,26 +1,23 @@
 const searchInput = document.getElementById('search');
+const searchButton = document.getElementById('searchButton');
 const resultsDiv = document.getElementById('results');
 
 // Load JSON data
 async function fetchData() {
-  // Fetch the manifest file to get the list of JSON files
   const manifestResponse = await fetch('streams/manifest.json');
   if (!manifestResponse.ok) {
     throw new Error('Failed to fetch manifest: ' + manifestResponse.statusText);
   }
   const manifest = await manifestResponse.json();
 
-  // Fetch all JSON files listed in the manifest
   const dataPromises = manifest.map(file => fetch(`streams/${file}`).then(response => {
     if (!response.ok) {
       throw new Error('Failed to fetch ' + file + ': ' + response.statusText);
     }
     return response.json();
   }));
-  
-  // Wait for all fetch promises to resolve
+
   const data = await Promise.all(dataPromises);
-  
   return data;
 }
 
@@ -38,14 +35,13 @@ function displayResults(results) {
 
 // Filter data based on search input
 function filterData(data, query) {
-  return data.filter(item => 
-    item.title.toLowerCase().includes(query.toLowerCase()) ||
+  return data.filter(item =>
     item.timestamps.some(ts => ts.description.toLowerCase().includes(query.toLowerCase()))
   );
 }
 
-// Event listener for search input
-searchInput.addEventListener('input', async () => {
+// Event listener for search button click
+searchButton.addEventListener('click', async () => {
   const query = searchInput.value;
   try {
     const data = await fetchData();
