@@ -22,19 +22,6 @@ async function fetchData() {
   return data;
 }
 
-// Function to scroll to a specific time in the video
-function scrollToTime(time) {
-  // Assuming you have a video player element with an ID 'player'
-  const playerElement = document.getElementById('player');
-  // Assuming you want to scroll to the video player element
-  playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// Function to seek to a specific time in the video
-function seekTo(seconds) {
-  player.seekTo(seconds, true); // Set allowSeekAhead to true to allow seeking outside of buffered data
-}
-
 // Display search results
 function displayResults(results) {
     resultsDiv.innerHTML = '';
@@ -56,7 +43,7 @@ function displayResults(results) {
             ${result.timestamps.map(ts => {
               const [minutes, seconds] = ts.time.split(':').map(parseFloat);
               const totalSeconds = minutes * 60 + seconds;
-              return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link" data-time="${totalSeconds}">${ts.time}</a> - ${ts.description}</li>`;
+              return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
             }).join('')}
           </ul>
           <div class="video-container">
@@ -86,7 +73,7 @@ function displayResults(results) {
       link.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const time = link.dataset.time;
-        seekTo(parseFloat(time)); // Call seekTo function with the specified time
+        scrollToTime(time); // Scroll to the specified time
       });
     });
   });
@@ -133,7 +120,7 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
     height: '315',
     width: '560',
-    videoId: '', // Replace with your video ID
+    videoId: videoID, // Replace with your video ID
     events: {
       'onStateChange': onPlayerStateChange
     }
@@ -142,8 +129,33 @@ function onYouTubeIframeAPIReady() {
 
 // Function to handle state changes of the YouTube player
 function onPlayerStateChange(event) {
-  // Handle state changes if needed
+  if (event.data === YT.PlayerState.PLAYING && ytSeconds > 0) {
+    player.seekTo(ytSeconds);
+    ytSeconds = 0;
+  }
 }
+
+// Function to seek to a specific time in the video
+function seekTo(seconds) {
+  if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+    player.seekTo(seconds);
+  } else {
+    ytSeconds = seconds;
+    player.playVideo();
+  }
+}
+
+// Add event listener for timestamp links
+const timestampLinks = div.querySelectorAll('.timestamp-link');
+timestampLinks.forEach(link => {
+  link.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent default link behavior
+    const time = link.dataset.time;
+    const [minutes, seconds] = time.split(':').map(parseFloat);
+    const totalSeconds = minutes * 60 + seconds;
+    seekTo(totalSeconds); // Call seekTo function with the specified time
+  });
+});
 
 // Initial fetch and display of data
 (async () => {
