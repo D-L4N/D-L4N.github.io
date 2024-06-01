@@ -1,6 +1,7 @@
 const searchInput = document.getElementById('search');
 const searchButton = document.getElementById('searchButton');
 const resultsDiv = document.getElementById('results');
+let player; // Variable to store the YouTube player instance
 
 // Load JSON data
 async function fetchData() {
@@ -20,17 +21,11 @@ async function fetchData() {
   return data;
 }
 
-// Extract video ID from YouTube link
-function getYouTubeVideoID(url) {
-  const urlObj = new URL(url);
-  return urlObj.searchParams.get("v");
-}
-
 // Display search results
 function displayResults(results) {
   resultsDiv.innerHTML = '';
   results.forEach(result => {
-    const videoID = getYouTubeVideoID(result.link);
+    const videoID = result.videoID; // Using videoID from the JSON data
     const thumbnailURL = `https://img.youtube.com/vi/${videoID}/0.jpg`;
     const div = document.createElement('div');
     div.classList.add('result-item');
@@ -43,7 +38,7 @@ function displayResults(results) {
         </h3>
         <p>${result.date}</p>
         <ul class="timestamps" style="display: none;">
-          ${result.timestamps.map(ts => `<li>${ts.time} - ${ts.description}</li>`).join('')}
+          ${result.timestamps.map(ts => `<li><a href="#" class="timestamp-link" data-time="${ts.time}">${ts.time} - ${ts.description}</a></li>`).join('')}
         </ul>
       </div>
       <img src="${thumbnailURL}" alt="${result.title} Thumbnail" class="thumbnail">
@@ -63,6 +58,16 @@ function displayResults(results) {
         timestamps.classList.remove('fade-in');
         collapseButton.textContent = 'Show';
       }
+    });
+
+    // Add event listener for timestamp links
+    const timestampLinks = div.querySelectorAll('.timestamp-link');
+    timestampLinks.forEach(link => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default link behavior
+        const time = link.dataset.time;
+        seekVideo(videoID, time); // Pass videoID along with time
+      });
     });
   });
 }
@@ -87,11 +92,44 @@ searchButton.addEventListener('click', async () => {
   }
 });
 
+// Load the YouTube player API asynchronously
+function loadYouTubePlayerAPI() {
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
+
+// Initialize the YouTube player
+function onYouTubeIframeAPIReady() {
+  const data = await fetchData();
+  const firstVideoID = data[0][0].videoID; // Assuming the first video in the first array is the one to be displayed
+  player = new YT.Player('player', {
+    height: '360',
+    width: '640',
+    videoId: firstVideoID, // Use the first video ID from the JSON data
+    events: {
+      'onReady': onPlayerReady
+    }
+  });
+}
+
+// Event listener for when the YouTube player is ready
+function onPlayerReady(event) {
+  // Player is ready, you can now seek the video to specific times
+}
+
+// Function to seek the video to a specific time
+function seekVideo(videoID, time) {
+  player.loadVideoById(videoID, parseInt(time), 'large'); // Load video by ID and seek to the specified time (in seconds)
+}
+
 // Initial fetch and display of data
 (async () => {
   try {
     const data = await fetchData();
     displayResults(data.flat().sort((a, b) => new Date(a.date) - new Date(b.date)));
+    loadYouTubePlayerAPI(); // Load the YouTube player API
   } catch (error) {
     console.error('Error fetching initial data:', error);
   }
