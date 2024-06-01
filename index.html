@@ -43,7 +43,7 @@
     }
     .result-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start; /* Align items at the top */
       margin-bottom: 20px;
     }
     .result-item h3 {
@@ -71,11 +71,24 @@
     .thumbnail {
       width: 160px;
       height: 90px;
-      object-fit: cover;
+      object-fit: cover; /* Ensure the image covers the entire space without distortion */
       margin-left: 20px;
     }
     .result-content {
+      flex-grow: 1; /* Allow the content to grow and fill the remaining space */
       max-width: calc(100% - 180px); /* Adjust the width based on thumbnail size */
+    }
+    .collapse-button {
+      margin-left: 10px;
+      background-color: #ec97be;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 5px 10px;
+    }
+    .collapse-button:hover {
+      background-color: #d1daf9;
     }
   </style>
 </head>
