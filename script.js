@@ -22,6 +22,14 @@ async function fetchData() {
   return data;
 }
 
+// Function to scroll to a specific time in the video
+function scrollToTime(time) {
+  // Assuming you have a video player element with an ID 'player'
+  const playerElement = document.getElementById('player');
+  // Assuming you want to scroll to the video player element
+  playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // Display search results
 function displayResults(results) {
     resultsDiv.innerHTML = '';
@@ -79,13 +87,7 @@ function displayResults(results) {
   });
 }
 
-// Function to scroll to a specific time in the video
-function scrollToTime(time) {
-  // Assuming you have a video player element with an ID 'player'
-  const playerElement = document.getElementById('player');
-  // Assuming you want to scroll to the video player element
-  playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+
 
 // Function to extract video ID from YouTube video URL
 function getYouTubeVideoID(url) {
