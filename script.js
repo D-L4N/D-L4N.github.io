@@ -22,14 +22,6 @@ async function fetchData() {
   return data;
 }
 
-// Function to scroll to a specific time in the video
-function scrollToTime(time) {
-  // Assuming you have a video player element with an ID 'player'
-  const playerElement = document.getElementById('player');
-  // Assuming you want to scroll to the video player element
-  playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 // Function to highlight search query in text
 function highlight(text, query) {
   const index = text.toLowerCase().indexOf(query.toLowerCase());
@@ -38,6 +30,14 @@ function highlight(text, query) {
   } else {
     return text;
   }
+}
+
+// Function to scroll to a specific time in the video
+function scrollToTime(time) {
+  // Assuming you have a video player element with an ID 'player'
+  const playerElement = document.getElementById('player');
+  // Assuming you want to scroll to the video player element
+  playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function displayResults(results, query) {
