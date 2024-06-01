@@ -1,3 +1,4 @@
+// Define constants and variables
 const searchInput = document.getElementById('search');
 const searchButton = document.getElementById('searchButton');
 const resultsDiv = document.getElementById('results');
@@ -142,10 +143,4 @@ function seekVideo(videoID, time) {
   } catch (error) {
     console.error('Error fetching initial data:', error);
   }
-  // Display search results
-function displayResults(results) {
-  console.log('Results:', results); //Logging check for debugging
-  resultsDiv.innerHTML = '';
-
-
 })();
