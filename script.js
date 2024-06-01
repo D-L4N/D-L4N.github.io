@@ -43,6 +43,10 @@ function displayResults(results, query) {
         const videoURL = result.link; // Video link from the JSON data
         const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
 
+        // Highlight the title and date based on the search query
+    const highlightedTitle = highlight(result.title, query);
+    const highlightedDate = highlight(result.date, query);
+
         const div = document.createElement('div');
         div.classList.add('result-item');
 
