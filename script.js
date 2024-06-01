@@ -109,11 +109,15 @@ function filterData(data, query) {
 
 // Event listener for search button click
 searchButton.addEventListener('click', async () => {
-  const query = searchInput.value;
+  const query = searchInput.value.trim(); // Trim the query to remove leading and trailing whitespaces
   try {
     const data = await fetchData();
-    const filteredData = query ? filterData(data.flat(), query) : data.flat();
-    displayResults(filteredData, query); // Pass the query to the displayResults function
+    if (query) { // If the query is not empty
+      const filteredData = filterData(data.flat(), query);
+      displayResults(filteredData, query);
+    } else { // If the query is empty
+      displayResults(data.flat());
+    }
   } catch (error) {
     console.error('Error fetching data:', error);
   }
