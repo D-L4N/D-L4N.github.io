@@ -56,9 +56,11 @@ function displayResults(results) {
     collapseButton.addEventListener('click', () => {
       if (timestamps.style.display === 'none') {
         timestamps.style.display = 'block';
+        timestamps.classList.add('fade-in');
         collapseButton.textContent = 'Hide';
       } else {
         timestamps.style.display = 'none';
+        timestamps.classList.remove('fade-in');
         collapseButton.textContent = 'Show';
       }
     });
