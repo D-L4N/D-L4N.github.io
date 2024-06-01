@@ -70,7 +70,7 @@ function displayResults(results) {
       link.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const time = link.dataset.time;
-        seekVideo(videoID, time); // Pass videoID along with time
+        scrollToTime(time); // Scroll to the specified time
       });
     });
   });
@@ -132,11 +132,18 @@ function onPlayerReady(event) {
   // Player is ready, you can now seek the video to specific times
 }
 
-// Function to seek the video to a specific time
-function seekVideo(videoID, time) {
-  player.loadVideoById(videoID, parseInt(time), 'large'); // Load video by ID and seek to the specified time (in seconds)
+// Function to scroll to a specific time in the embedded video
+function scrollToTime(time) {
+  // Parse the time string (e.g., "2:02") to seconds
+  const [minutes, seconds] = time.split(':').map(parseFloat);
+  const totalSeconds = minutes * 60 + seconds;
+  
+  // Calculate the offset to scroll to (adjust as needed based on your layout)
+  const offset = totalSeconds * 10; // Adjust based on your video length and layout
+  
+  // Scroll to the offset
+  window.scrollTo({ top: offset, behavior: 'smooth' });
 }
-
 // Initial fetch and display of data
 (async () => {
   try {
