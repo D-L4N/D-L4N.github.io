@@ -80,7 +80,7 @@ function highlight(text, query) {
         collapseButton.textContent = 'Show';
       }
     });
-
+results.forEach(result => {
     // Add event listener for timestamp links
     const timestampLinks = div.querySelectorAll('.timestamp-link');
     timestampLinks.forEach(link => {
@@ -91,6 +91,7 @@ function highlight(text, query) {
       });
     });
   });
+      });
 }
 
 
