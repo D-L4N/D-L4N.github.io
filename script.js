@@ -26,22 +26,25 @@ function displayResults(results) {
   resultsDiv.innerHTML = '';
   results.forEach(result => {
     const videoID = result.videoID; // Using videoID from the JSON data
-    const thumbnailURL = `https://img.youtube.com/vi/${videoID}/0.jpg`;
+    const videoURL = result.link; // Video link from the JSON data
+
     const div = document.createElement('div');
     div.classList.add('result-item');
     
     div.innerHTML = `
       <div class="result-content">
         <h3>
-          <a href="${result.link}" target="_blank" class="stream-link">${result.title}</a>
+          <a href="${videoURL}" target="_blank" class="stream-link">${result.title}</a>
           <button class="collapse-button">Show</button>
         </h3>
         <p>${result.date}</p>
         <ul class="timestamps">
           ${result.timestamps.map(ts => `<li><a href="#" class="timestamp-link" data-time="${ts.time}">${ts.time}</a> - ${ts.description}</li>`).join('')}
         </ul>
+        <div class="video-container">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoID}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
       </div>
-      <img src="${thumbnailURL}" alt="${result.title} Thumbnail" class="thumbnail">
     `;
     resultsDiv.appendChild(div);
 
@@ -102,18 +105,15 @@ function loadYouTubePlayerAPI() {
 
 // Initialize the YouTube player
 function onYouTubeIframeAPIReady() {
-  fetchData().then(data => {
-    const firstVideoID = data[0][0].videoID; // Assuming the first video in the first array is the one to be displayed
-    player = new YT.Player('player', {
-      height: '360',
-      width: '640',
-      videoId: firstVideoID, // Use the first video ID from the JSON data
-      events: {
-        'onReady': onPlayerReady
-      }
-    });
-  }).catch(error => {
-    console.error('Error fetching data:', error);
+  const data = await fetchData();
+  const firstVideoID = data[0][0].videoID; // Assuming the first video in the first array is the one to be displayed
+  player = new YT.Player('player', {
+    height: '360',
+    width: '640',
+    videoId: firstVideoID, // Use the first video ID from the JSON data
+    events: {
+      'onReady': onPlayerReady
+    }
   });
 }
 
@@ -124,13 +124,7 @@ function onPlayerReady(event) {
 
 // Function to seek the video to a specific time
 function seekVideo(videoID, time) {
-  player.loadVideoById(videoID, convertTimeToSeconds(time), 'large'); // Load video by ID and seek to the specified time (in seconds)
-}
-
-// Helper function to convert time format (e.g., '2:02') to seconds
-function convertTimeToSeconds(time) {
-  const [minutes, seconds] = time.split(':').map(parseFloat);
-  return minutes * 60 + seconds;
+  player.loadVideoById(videoID, parseInt(time), 'large'); // Load video by ID and seek to the specified time (in seconds)
 }
 
 // Initial fetch and display of data
