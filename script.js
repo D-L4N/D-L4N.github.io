@@ -25,37 +25,37 @@ async function fetchData() {
 
 // Display search results
 function displayResults(results) {
-    resultsDiv.innerHTML = '';
-    results.forEach(result => {
-      const videoURL = result.link; // Video link from the JSON data
-      const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
-  
-      const div = document.createElement('div');
-      div.classList.add('result-item');
-      
-      div.innerHTML = `
-        <div class="result-content">
-          <h3>
-            <a href="${videoURL}" target="_blank" class="stream-link">${result.title}</a>
-            <button class="collapse-button">Show</button>
-          </h3>
-          <p>${result.date}</p>
-          <ul class="timestamps">
-            ${result.timestamps.map(ts => {
-              const [minutes, seconds] = ts.time.split(':').map(parseFloat);
-              const totalSeconds = minutes * 60 + seconds;
-              return `<li><a href="#" data-time="${totalSeconds}" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
-            }).join('')}
-          </ul>
-          <div class="video-container">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoID}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-        </div>`;
-      resultsDiv.appendChild(div);
+  resultsDiv.innerHTML = '';
+  results.forEach(result => {
+    const videoURL = result.link; // Video link from the JSON data
+    const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
+
+    const div = document.createElement('div');
+    div.classList.add('result-item');
+
+    div.innerHTML = `
+      <div class="result-content">
+        <h3>
+          <a href="${videoURL}" target="_blank" class="stream-link">${result.title}</a>
+          <button class="collapse-button">Show</button>
+        </h3>
+        <p>${result.date}</p>
+        <ul class="timestamps">
+          ${result.timestamps.map(ts => {
+            const [minutes, seconds] = ts.time.split(':').map(parseFloat);
+            const totalSeconds = minutes * 60 + seconds;
+            return `<li><a href="#" data-time="${totalSeconds}" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
+          }).join('')}
+        </ul>
+        <div class="video-container">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoID}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>`;
+    resultsDiv.appendChild(div);
 
     const collapseButton = div.querySelector('.collapse-button');
     const timestamps = div.querySelector('.timestamps');
-    
+
     collapseButton.addEventListener('click', () => {
       if (timestamps.style.display === 'none') {
         timestamps.style.display = 'block';
@@ -108,24 +108,24 @@ searchButton.addEventListener('click', async () => {
   }
 });
 
-// Function to load the YouTube Player API
+// Load the YouTube Player API and initialize the player
 function loadYouTubePlayerAPI() {
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   const firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
 
-// Initialize the YouTube player when the Iframe API is ready
-window.onYouTubeIframeAPIReady = function() {
-  player = new YT.Player('player', {
-    height: '315',
-    width: '560',
-    videoId: videoID, // Replace with your video ID
-    events: {
-      'onStateChange': onPlayerStateChange
-    }
-  });
+  // Initialize the YouTube player when the Iframe API is ready
+  window.onYouTubeIframeAPIReady = function() {
+    player = new YT.Player('player', {
+      height: '315',
+      width: '560',
+      videoId: '', // No video ID initially
+      events: {
+        'onStateChange': onPlayerStateChange
+      }
+    });
+  }
 }
 
 // Function to handle state changes of the YouTube player
