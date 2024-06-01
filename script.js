@@ -30,6 +30,16 @@ function scrollToTime(time) {
   playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// Function to highlight search query in text
+function highlight(text, query) {
+  const index = text.toLowerCase().indexOf(query.toLowerCase());
+  if (index >= 0) {
+    return text.substring(0, index) + '<span class="highlight">' + text.substring(index, index + query.length) + '</span>' + text.substring(index + query.length);
+  } else {
+    return text;
+  }
+}
+
 function displayResults(results, query) {
     resultsDiv.innerHTML = '';
     results.forEach(result => {
