@@ -5,19 +5,25 @@ const resultsDiv = document.getElementById('results');
 // Load JSON data
 async function fetchData() {
   const manifestResponse = await fetch('streams/manifest.json');
+  console.log('Fetching manifest.json...');
   if (!manifestResponse.ok) {
     throw new Error('Failed to fetch manifest: ' + manifestResponse.statusText);
   }
   const manifest = await manifestResponse.json();
+  console.log('Manifest fetched:', manifest);
 
-  const dataPromises = manifest.map(file => fetch(`streams/${file}`).then(response => {
-    if (!response.ok) {
-      throw new Error('Failed to fetch ' + file + ': ' + response.statusText);
-    }
-    return response.json();
-  }));
+  const dataPromises = manifest.map(file => {
+    console.log('Fetching', file);
+    return fetch(`streams/${file}`).then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch ' + file + ': ' + response.statusText);
+      }
+      return response.json();
+    });
+  });
 
   const data = await Promise.all(dataPromises);
+  console.log('Data fetched:', data);
   return data;
 }
 
