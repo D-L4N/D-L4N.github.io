@@ -3,6 +3,7 @@ const searchInput = document.getElementById('search');
 const searchButton = document.getElementById('searchButton');
 const resultsDiv = document.getElementById('results');
 let player; // Variable to store the YouTube player instance
+let ytSeconds = 0; // Variable to store seconds to seek when player is ready
 
 // Load JSON data
 async function fetchData() {
@@ -116,7 +117,7 @@ function loadYouTubePlayerAPI() {
 }
 
 // Initialize the YouTube player when the Iframe API is ready
-function onYouTubeIframeAPIReady() {
+window.onYouTubeIframeAPIReady = function() {
   player = new YT.Player('player', {
     height: '315',
     width: '560',
@@ -147,7 +148,6 @@ function seekTo(seconds) {
     setTimeout(() => seekTo(seconds), 100);
   }
 }
-
 
 // Initial fetch and display of data
 (async () => {
