@@ -24,30 +24,33 @@ async function fetchData() {
 
 // Display search results
 function displayResults(results) {
-  resultsDiv.innerHTML = '';
-  results.forEach(result => {
-    const videoURL = result.link; // Video link from the JSON data
-    const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
-
-    const div = document.createElement('div');
-    div.classList.add('result-item');
-    
-    div.innerHTML = `
-      <div class="result-content">
-        <h3>
-          <a href="${videoURL}" target="_blank" class="stream-link">${result.title}</a>
-          <button class="collapse-button">Show</button>
-        </h3>
-        <p>${result.date}</p>
-        <ul class="timestamps">
-          ${result.timestamps.map(ts => `<li><a href="#" class="timestamp-link" data-time="${ts.time}">${ts.time}</a> - ${ts.description}</li>`).join('')}
-        </ul>
-        <div class="video-container">
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoID}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
-    `;
-    resultsDiv.appendChild(div);
+    resultsDiv.innerHTML = '';
+    results.forEach(result => {
+      const videoURL = result.link; // Video link from the JSON data
+      const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
+  
+      const div = document.createElement('div');
+      div.classList.add('result-item');
+      
+      div.innerHTML = `
+        <div class="result-content">
+          <h3>
+            <a href="${videoURL}" target="_blank" class="stream-link">${result.title}</a>
+            <button class="collapse-button">Show</button>
+          </h3>
+          <p>${result.date}</p>
+          <ul class="timestamps">
+            ${result.timestamps.map(ts => {
+              const [minutes, seconds] = ts.time.split(':').map(parseFloat);
+              const totalSeconds = minutes * 60 + seconds;
+              return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
+            }).join('')}
+          </ul>
+          <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoID}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>`;
+      resultsDiv.appendChild(div);
 
     const collapseButton = div.querySelector('.collapse-button');
     const timestamps = div.querySelector('.timestamps');
