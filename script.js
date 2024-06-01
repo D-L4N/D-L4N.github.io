@@ -43,7 +43,7 @@ function displayResults(results) {
             ${result.timestamps.map(ts => {
               const [minutes, seconds] = ts.time.split(':').map(parseFloat);
               const totalSeconds = minutes * 60 + seconds;
-              return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
+              return `<li><a href="#" data-time="${totalSeconds}" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
             }).join('')}
           </ul>
           <div class="video-container">
@@ -73,7 +73,7 @@ function displayResults(results) {
       link.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const time = link.dataset.time;
-        scrollToTime(time); // Scroll to the specified time
+        seekTo(parseFloat(time)); // Call seekTo function with the specified time
       });
     });
   });
@@ -144,18 +144,6 @@ function seekTo(seconds) {
     player.playVideo();
   }
 }
-
-// Add event listener for timestamp links
-const timestampLinks = div.querySelectorAll('.timestamp-link');
-timestampLinks.forEach(link => {
-  link.addEventListener('click', (event) => {
-    event.preventDefault(); // Prevent default link behavior
-    const time = link.dataset.time;
-    const [minutes, seconds] = time.split(':').map(parseFloat);
-    const totalSeconds = minutes * 60 + seconds;
-    seekTo(totalSeconds); // Call seekTo function with the specified time
-  });
-});
 
 // Initial fetch and display of data
 (async () => {
