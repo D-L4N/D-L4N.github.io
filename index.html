@@ -43,9 +43,14 @@
     }
     .result-item {
       display: flex;
+      animation: fadeIn 0.5s ease-in-out; /* Added fade-in */
       align-items: flex-start; /* Align items at the top */
       margin-bottom: 20px;
     }
+    @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+    } /* Fade-in for expanding smoother */
     .result-item h3 {
       margin: 0;
       font-size: 20px;
