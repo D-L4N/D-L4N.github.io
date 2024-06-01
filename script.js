@@ -3,7 +3,6 @@ const searchInput = document.getElementById('search');
 const searchButton = document.getElementById('searchButton');
 const resultsDiv = document.getElementById('results');
 let player; // Variable to store the YouTube player instance
-let ytSeconds = 0; // Variable to store seconds to seek when player is ready
 
 // Load JSON data
 async function fetchData() {
@@ -25,37 +24,37 @@ async function fetchData() {
 
 // Display search results
 function displayResults(results) {
-  resultsDiv.innerHTML = '';
-  results.forEach(result => {
-    const videoURL = result.link; // Video link from the JSON data
-    const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
-
-    const div = document.createElement('div');
-    div.classList.add('result-item');
-
-    div.innerHTML = `
-      <div class="result-content">
-        <h3>
-          <a href="${videoURL}" target="_blank" class="stream-link">${result.title}</a>
-          <button class="collapse-button">Show</button>
-        </h3>
-        <p>${result.date}</p>
-        <ul class="timestamps">
-          ${result.timestamps.map(ts => {
-            const [minutes, seconds] = ts.time.split(':').map(parseFloat);
-            const totalSeconds = minutes * 60 + seconds;
-            return `<li><a href="#" data-time="${totalSeconds}" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
-          }).join('')}
-        </ul>
-        <div class="video-container">
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoID}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>`;
-    resultsDiv.appendChild(div);
+    resultsDiv.innerHTML = '';
+    results.forEach(result => {
+      const videoURL = result.link; // Video link from the JSON data
+      const videoID = getYouTubeVideoID(videoURL); // Extract video ID from the URL
+  
+      const div = document.createElement('div');
+      div.classList.add('result-item');
+      
+      div.innerHTML = `
+        <div class="result-content">
+          <h3>
+            <a href="${videoURL}" target="_blank" class="stream-link">${result.title}</a>
+            <button class="collapse-button">Show</button>
+          </h3>
+          <p>${result.date}</p>
+          <ul class="timestamps">
+            ${result.timestamps.map(ts => {
+              const [minutes, seconds] = ts.time.split(':').map(parseFloat);
+              const totalSeconds = minutes * 60 + seconds;
+              return `<li><a href="${videoURL}&t=${totalSeconds}" target="_blank" class="timestamp-link">${ts.time}</a> - ${ts.description}</li>`;
+            }).join('')}
+          </ul>
+          <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoID}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>`;
+      resultsDiv.appendChild(div);
 
     const collapseButton = div.querySelector('.collapse-button');
     const timestamps = div.querySelector('.timestamps');
-
+    
     collapseButton.addEventListener('click', () => {
       if (timestamps.style.display === 'none') {
         timestamps.style.display = 'block';
@@ -74,7 +73,7 @@ function displayResults(results) {
       link.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const time = link.dataset.time;
-        seekTo(parseFloat(time)); // Call seekTo function with the specified time
+        scrollToTime(time); // Scroll to the specified time
       });
     });
   });
@@ -108,24 +107,24 @@ searchButton.addEventListener('click', async () => {
   }
 });
 
-// Load the YouTube Player API and initialize the player
+// Function to load the YouTube Player API
 function loadYouTubePlayerAPI() {
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   const firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
 
-  // Initialize the YouTube player when the Iframe API is ready
-  window.onYouTubeIframeAPIReady = function() {
-    player = new YT.Player('player', {
-      height: '315',
-      width: '560',
-      videoId: '', // No video ID initially
-      events: {
-        'onStateChange': onPlayerStateChange
-      }
-    });
-  }
+// Initialize the YouTube player when the Iframe API is ready
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    height: '315',
+    width: '560',
+    videoId: videoID, // Replace with your video ID
+    events: {
+      'onStateChange': onPlayerStateChange
+    }
+  });
 }
 
 // Function to handle state changes of the YouTube player
@@ -138,16 +137,28 @@ function onPlayerStateChange(event) {
 
 // Function to seek to a specific time in the video
 function seekTo(seconds) {
-  if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
+  if (player.getPlayerState() === YT.PlayerState.PLAYING) {
     player.seekTo(seconds);
-  } else if (player) {
+  } else {
     ytSeconds = seconds;
     player.playVideo();
-  } else {
-    // Retry after a short delay if player is not yet defined
-    setTimeout(() => seekTo(seconds), 100);
   }
 }
+
+// Add event listener for timestamp links
+const timestampLinks = div.querySelectorAll('.timestamp-link');
+timestampLinks.forEach(link => {
+  link.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent default link behavior
+    const time = link.dataset.time;
+    const [minutes, seconds] = time.split(':').map(parseFloat);
+    const totalSeconds = minutes * 60 + seconds;
+    seekTo(totalSeconds); // Call seekTo function with the specified time
+
+    // Set the href attribute to the correct timestamp value
+    link.href = `#${totalSeconds}`;
+  });
+});
 
 // Initial fetch and display of data
 (async () => {
