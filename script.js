@@ -137,13 +137,17 @@ function onPlayerStateChange(event) {
 
 // Function to seek to a specific time in the video
 function seekTo(seconds) {
-  if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+  if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
     player.seekTo(seconds);
-  } else {
+  } else if (player) {
     ytSeconds = seconds;
     player.playVideo();
+  } else {
+    // Retry after a short delay if player is not yet defined
+    setTimeout(() => seekTo(seconds), 100);
   }
 }
+
 
 // Initial fetch and display of data
 (async () => {
