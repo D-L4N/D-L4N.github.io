@@ -136,4 +136,10 @@ function seekVideo(videoID, time) {
   } catch (error) {
     console.error('Error fetching initial data:', error);
   }
+  // Display search results
+function displayResults(results) {
+  console.log('Results:', results); //Logging check for debugging
+  resultsDiv.innerHTML = '';
+
+
 })();
