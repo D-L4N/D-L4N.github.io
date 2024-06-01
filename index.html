@@ -41,22 +41,24 @@
     #results {
       margin-top: 20px;
     }
-    #results div {
+    .result-item {
+      display: flex;
+      align-items: center;
       margin-bottom: 20px;
     }
-    #results h3 {
+    .result-item h3 {
       margin: 0;
       font-size: 20px;
     }
-    #results p {
+    .result-item p {
       margin: 5px 0;
       font-size: 14px;
       color: #666;
     }
-    #results ul {
+    .result-item ul {
       padding-left: 20px;
     }
-    #results li {
+    .result-item li {
       font-size: 14px;
     }
     .stream-link {
@@ -65,6 +67,15 @@
     }
     .stream-link:hover {
       text-decoration: underline;
+    }
+    .thumbnail {
+      width: 160px;
+      height: 90px;
+      object-fit: cover;
+      margin-left: 20px;
+    }
+    .result-content {
+      max-width: calc(100% - 180px); /* Adjust the width based on thumbnail size */
     }
   </style>
 </head>
