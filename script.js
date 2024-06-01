@@ -102,15 +102,18 @@ function loadYouTubePlayerAPI() {
 
 // Initialize the YouTube player
 function onYouTubeIframeAPIReady() {
-  const data = await fetchData();
-  const firstVideoID = data[0][0].videoID; // Assuming the first video in the first array is the one to be displayed
-  player = new YT.Player('player', {
-    height: '360',
-    width: '640',
-    videoId: firstVideoID, // Use the first video ID from the JSON data
-    events: {
-      'onReady': onPlayerReady
-    }
+  fetchData().then(data => {
+    const firstVideoID = data[0][0].videoID; // Assuming the first video in the first array is the one to be displayed
+    player = new YT.Player('player', {
+      height: '360',
+      width: '640',
+      videoId: firstVideoID, // Use the first video ID from the JSON data
+      events: {
+        'onReady': onPlayerReady
+      }
+    });
+  }).catch(error => {
+    console.error('Error fetching data:', error);
   });
 }
 
