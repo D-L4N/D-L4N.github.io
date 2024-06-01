@@ -104,22 +104,24 @@ function loadYouTubePlayerAPI() {
 }
 
 // Initialize the YouTube player
-async function onYouTubeIframeAPIReady() {
-  try {
-    const data = await fetchData();
-    const firstVideoID = data[0][0].videoID; // Assuming the first video in the first array is the one to be displayed
-    player = new YT.Player('player', {
-      height: '360',
-      width: '640',
-      videoId: firstVideoID, // Use the first video ID from the JSON data
-      events: {
-        'onReady': onPlayerReady
-      }
+function onYouTubeIframeAPIReady() {
+  fetchData()
+    .then(data => {
+      const firstVideoID = data[0][0].videoID; // Assuming the first video in the first array is the one to be displayed
+      player = new YT.Player('player', {
+        height: '360',
+        width: '640',
+        videoId: firstVideoID, // Use the first video ID from the JSON data
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error initializing YouTube player:', error);
     });
-  } catch (error) {
-    console.error('Error initializing YouTube player:', error);
-  }
 }
+
 
 // Event listener for when the YouTube player is ready
 function onPlayerReady(event) {
