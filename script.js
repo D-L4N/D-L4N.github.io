@@ -157,7 +157,13 @@ timestampLinks.forEach(link => {
     if (timeIndex !== -1) {
       const timeParam = href.substring(timeIndex + 3); // Extract the time parameter value
       const seconds = parseInt(timeParam); // Parse the time parameter as seconds
-      seekTo(seconds); // Call seekTo function with the specified time
+      if (!isNaN(seconds)) {
+        seekTo(seconds); // Call seekTo function with the specified time
+      } else {
+        console.error('Invalid time parameter:', timeParam);
+      }
+    } else {
+      console.error('Time parameter not found in URL:', href);
 
 // Initial fetch and display of data
 (async () => {
