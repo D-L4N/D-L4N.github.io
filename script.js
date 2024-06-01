@@ -164,6 +164,10 @@ timestampLinks.forEach(link => {
       }
     } else {
       console.error('Time parameter not found in URL:', href);
+            console.error('Time parameter not found in URL:', href);
+    }
+  });
+});
 
 // Initial fetch and display of data
 (async () => {
