@@ -3,9 +3,24 @@ const resultsDiv = document.getElementById('results');
 
 // Load JSON data
 async function fetchData() {
-  const files = ['stream1.json', 'stream2.json']; // Add all your JSON file names here
-  const promises = files.map(file => fetch(`streams/${file}`).then(response => response.json()));
-  const data = await Promise.all(promises);
+  // Fetch the manifest file to get the list of JSON files
+  const manifestResponse = await fetch('streams/manifest.json');
+  if (!manifestResponse.ok) {
+    throw new Error('Failed to fetch manifest: ' + manifestResponse.statusText);
+  }
+  const manifest = await manifestResponse.json();
+
+  // Fetch all JSON files listed in the manifest
+  const dataPromises = manifest.map(file => fetch(`streams/${file}`).then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to fetch ' + file + ': ' + response.statusText);
+    }
+    return response.json();
+  }));
+  
+  // Wait for all fetch promises to resolve
+  const data = await Promise.all(dataPromises);
+  
   return data;
 }
 
@@ -32,14 +47,22 @@ function filterData(data, query) {
 // Event listener for search input
 searchInput.addEventListener('input', async () => {
   const query = searchInput.value;
-  const data = await fetchData();
-  const filteredData = filterData(data.flat(), query); // Flatten the array of arrays
-  displayResults(filteredData);
+  try {
+    const data = await fetchData();
+    const filteredData = filterData(data.flat(), query);
+    displayResults(filteredData);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 });
 
 // Initial fetch and display of data
 (async () => {
-  const data = await fetchData();
-  displayResults(data.flat()); // Flatten the array of arrays
+  try {
+    const data = await fetchData();
+    displayResults(data.flat());
+  } catch (error) {
+    console.error('Error fetching initial data:', error);
+  }
 })();
 
