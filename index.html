@@ -41,10 +41,6 @@
     #results {
       margin-top: 20px;
     }
-    .result-content {
-    width: calc(100% - 580px); /* Adjust width as needed */
-    float: left;
-}
     .result-item {
       display: flex;
       animation: fadeIn 0.5s ease-in-out; /* Added fade-in */
@@ -99,12 +95,10 @@
       background-color: #9c6ae5; /* Updated color */
     }
     .video-container {
-    width: 12.5%; /* Set to 1/8 of the screen width */
-    height: 0;
-    padding-top: 7.03125%; /* 16:9 Aspect Ratio (9 / 16 * 100) */
-    float: right;
-    margin-left: 20px; /* Add some margin for separation */
-}
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+    }
     .video-container iframe {
       position: absolute;
       top: 0;
