@@ -95,9 +95,11 @@
       background-color: #9c6ae5; /* Updated color */
     }
     .video-container {
-    width: 10%; /* Set to 1/8 of the screen width */
-    float: right;
-    margin-left: 20px; /* Add some margin for separation */
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: scale(0.25); /* Adjust scale as needed */
+    transform-origin: top right; /* Keep the top-right corner as the reference point for scaling */
 }
     .video-container iframe {
       position: absolute;
